@@ -2150,7 +2150,8 @@ function buildSharePage(captures,url,now){
   var typeLabel={none:'배경 없음',diagonal:'사선',gradient:'그라데이션'};
   var bannerCards='';
   captures.forEach(function(c){
-    var label=typeLabel[c.set.type]||c.set.type;
+    // 구 구조: c.set.type / 신 구조: c.type, c.typeLabel
+    var label=c.typeLabel||(c.set?typeLabel[c.set.type]||c.set.type:'')||(c.type?typeLabel[c.type]||c.type:'');
     bannerCards+=
       '<div class="section-label">PC 배너 <span class="tag">1240 × 200 px</span> <span class="tag tag-type">'+label+'</span></div>'+
       '<div class="bcard">'+(c.pcImg?'<img src="'+c.pcImg+'" style="width:100%;border-radius:8px;">':'<div style="height:200px;background:#eee;border-radius:8px;"></div>')+'</div>'+
