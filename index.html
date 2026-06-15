@@ -2131,16 +2131,16 @@ async function captureSetBanner(d,id){
   const bnr=document.getElementById('bnr'+S+'_'+id);
   if(!bnr) return null;
   const{w,h}=SIZES[d];
-  // 실제 크기로 임시 복원
   const origTransform=bnr.style.transform;
   bnr.style.transform='scale(1)';
   await new Promise(r=>setTimeout(r,80));
   try{
     const canvas=await html2canvas(bnr,{
-      scale:2,useCORS:true,allowTaint:true,
+      scale:1.5,useCORS:true,allowTaint:true,
       backgroundColor:null,width:w,height:h,logging:false
     });
-    return canvas.toDataURL('image/png');
+    // JPEG 압축으로 용량 절감 (PNG 대비 ~80% 감소)
+    return canvas.toDataURL('image/jpeg', 0.85);
   }finally{
     bnr.style.transform=origTransform;
   }
