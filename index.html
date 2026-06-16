@@ -279,13 +279,14 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
 /* MAIN FOOTER — 1x/2x 버튼 나란히 */
 .main-footer{display:flex;flex-direction:column;align-items:center;gap:12px;padding:4px 0 0}
 .dl-main-row{display:flex;gap:10px;align-items:center}
-.dl-btn-main{display:inline-flex;align-items:center;gap:6px;padding:12px 28px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s}
-.dl-btn-main:hover{background:var(--blue-dk)}
+.dl-btn-main{display:inline-flex;align-items:center;gap:6px;padding:12px 28px;background:var(--sf);color:var(--t2);border:1px solid var(--bd2);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.dl-btn-main svg{stroke:var(--t2)}
+.dl-btn-main:hover{background:var(--sf3);border-color:var(--t3)}
 .dl-btn-main:active{transform:scale(.97)}
-.dl-btn-main:disabled{background:#c5cdd9;cursor:not-allowed;transform:none;opacity:.6}
-.dl-btn-2x{background:var(--sf);color:var(--blue);border:2px solid var(--blue);}
-.dl-btn-2x:hover{background:var(--blue-lt)}
-.dl-btn-2x:disabled{background:var(--sf3);color:var(--t4);border-color:var(--bd2);}
+.dl-btn-main:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.dl-btn-2x{}
+.dl-btn-2x:hover{}
+.dl-btn-2x:disabled{}
 .dl-all-note{font-size:11px;color:var(--t3);min-height:16px;display:inline-flex;align-items:center;}
 
 /* REVISION TOAST — 수정 요청 수신 시 크게 표시 */
@@ -645,6 +646,7 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
   <div class="rt-from" id="revToastFrom"></div>
   <div class="rt-msg" id="revToastMsg"></div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 /* STATE */
@@ -1903,7 +1905,7 @@ function checkDownloadReady(){
   const mTitle=txt.m.title.trim();
   const mSub=txt.m.sub.trim();
   const hasSets=bannerSets.length>0;
-  const ready=!!(pcTitle && pcSub && mTitle && mSub && imgSrc && logoSrc && hasSets);
+  const ready=!!(hasSets);
   const b1=document.getElementById('dlBtn1');
   const b2=document.getElementById('dlBtn2');
   if(b1) b1.disabled=!ready;
@@ -1940,11 +1942,52 @@ async function dlPNG(d,scale){
 }
 async function dlAllPNG(scale){
   const note=document.getElementById('dlAllNote');
+  const btn1=document.getElementById('dlBtn1');
+  const btn2=document.getElementById('dlBtn2');
   note.textContent='다운로드 중...';
-  await dlPNG('pc',scale);
-  await dlPNG('m',scale);
-  note.textContent=`✅ PC+Mobile ${scale}배수 저장 완료`;
-  setTimeout(()=>note.textContent='',4000);
+  if(btn1) btn1.disabled=true;
+  if(btn2) btn2.disabled=true;
+  try{
+    const zip=new JSZip();
+    const typeLabel={none:'배경없음',diagonal:'사선',gradient:'그라데이션'};
+    for(let i=0;i<bannerSets.length;i++){
+      const set=bannerSets[i];
+      const label=typeLabel[set.type]||set.type;
+      const idx=i+1;
+      for(const d of ['pc','m']){
+        const S=d==='pc'?'PC':'M';
+        const bnr=document.getElementById('bnr'+S+'_'+set.id);
+        if(!bnr) continue;
+        const{w,h}=SIZES[d];
+        const origZoom=bnr.style.zoom;
+        bnr.style.zoom='';
+        await new Promise(r=>setTimeout(r,80));
+        const canvas=await html2canvas(bnr,{scale,useCORS:true,allowTaint:true,backgroundColor:null,width:w,height:h,logging:false});
+        bnr.style.zoom=origZoom;
+        // dataURL → blob
+        const dataUrl=canvas.toDataURL('image/png');
+        const base64=dataUrl.split(',')[1];
+        const fname=idx+'_'+label+'_'+S+'_'+scale+'x.png';
+        zip.file(fname, base64, {base64:true});
+        await new Promise(r=>setTimeout(r,50));
+      }
+    }
+    // ZIP 생성 & 다운로드
+    const blob=await zip.generateAsync({type:'blob'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='banners_'+scale+'x.zip';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+    note.textContent='✅ '+scale+'배수 ZIP 다운로드 완료';
+    setTimeout(()=>note.textContent='',4000);
+  }catch(e){
+    note.textContent='오류: '+e.message;
+    console.error(e);
+  }finally{
+    if(btn1) btn1.disabled=false;
+    if(btn2) btn2.disabled=false;
+  }
 }
 function toggleGuidePanel(d){
   const id=d==='pc'?'guidePanelPC':'guidePanelM';
@@ -2138,11 +2181,10 @@ async function captureSetBanner(d,id){
   await new Promise(r=>setTimeout(r,80));
   try{
     const canvas=await html2canvas(bnr,{
-      scale:1.5,useCORS:true,allowTaint:true,
+      scale:1,useCORS:true,allowTaint:true,
       backgroundColor:null,width:w,height:h,logging:false
     });
-    // JPEG 압축으로 용량 절감 (PNG 대비 ~80% 감소)
-    return canvas.toDataURL('image/jpeg', 0.85);
+    return canvas.toDataURL('image/jpeg', 0.82);
   }finally{
     bnr.style.transform=origTransform;
   }
