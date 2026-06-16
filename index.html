@@ -493,7 +493,7 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
         </div>
         <div class="up-name-row"><div id="logoFName" class="up-name"></div></div>
       </div>
-      <div class="gnote">미제공 시 텍스트로 기업명 노출</div>
+      <div class="gnote" style="display:none">미제공 시 텍스트로 기업명 노출</div>
     </div>
   </div>
 
@@ -501,16 +501,16 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
   <div class="sec" style="margin-bottom:28px">
     <div class="sec-head"><div class="sec-num">4</div><span class="sec-label">텍스트</span></div>
     <div class="sec-body">
-      <div class="flbl">PC 메인 타이틀 <span class="fhint">최대 20자</span></div>
+      <div class="flbl">PC 메인 텍스트 <span class="fhint">최대 20자</span></div>
       <input type="text" class="finput" id="pcTitleIn" maxlength="20" placeholder="메인 텍스트를 입력하세요" oninput="onSidebarText('pc','title',this.value)">
-      <div class="flbl" style="margin-top:8px">PC 서브 타이틀 <span class="fhint">최대 30자</span></div>
+      <div class="flbl" style="margin-top:8px">PC 서브 텍스트 <span class="fhint">최대 30자</span></div>
       <input type="text" class="finput" id="pcSubIn" maxlength="30" placeholder="서브 텍스트를 입력하세요" oninput="onSidebarText('pc','sub',this.value)">
       <div style="height:1px;background:var(--bd);margin:12px 0"></div>
-      <div class="flbl">M 메인 타이틀 줄 1 <span class="fhint">최대 10자</span></div>
+      <div class="flbl">M 메인 텍스트 줄 1 <span class="fhint">최대 10자</span></div>
       <input type="text" class="finput" id="mTitle1In" maxlength="10" placeholder="첫째 줄" oninput="onSidebarMTitle()">
-      <div class="flbl" style="margin-top:8px">M 메인 타이틀 줄 2 <span class="fhint">최대 10자</span></div>
+      <div class="flbl" style="margin-top:8px">M 메인 텍스트 줄 2 <span class="fhint">최대 10자</span></div>
       <input type="text" class="finput" id="mTitle2In" maxlength="10" placeholder="둘째 줄" oninput="onSidebarMTitle()">
-      <div class="flbl" style="margin-top:8px">M 서브 타이틀 <span class="fhint">최대 14자</span></div>
+      <div class="flbl" style="margin-top:8px">M 서브 텍스트 <span class="fhint">최대 14자</span></div>
       <input type="text" class="finput" id="mSubIn" maxlength="14" placeholder="서브 텍스트를 입력하세요" oninput="onSidebarText('m','sub',this.value)">
     </div>
   </div>
@@ -1108,8 +1108,8 @@ function applySetStyle(id){
       const lines=titleText?titleText.split('\n'):['',''];
       const line1=lines[0]||'';
       const line2=lines[1]||'';
-      const ph1='메인 타이틀 줄 1';
-      const ph2='메인 타이틀 줄 2';
+      const ph1='메인 텍스트 줄 1';
+      const ph2='메인 텍스트 줄 2';
       const mTitleStyle=`font-family:'Pretendard',sans-serif;font-size:22px;font-weight:800;letter-spacing:-1px;line-height:1.2;color:${color};white-space:nowrap;display:block;`;
       titleHTML=`<div style="${mTitleStyle}margin-bottom:2px;">${line1||`<span style="opacity:.35">${ph1}</span>`}</div>`
                +`<div style="${mTitleStyle}margin-bottom:8px;">${line2||`<span style="opacity:.35">${ph2}</span>`}</div>`;
