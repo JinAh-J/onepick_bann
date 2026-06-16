@@ -279,7 +279,7 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
 /* MAIN FOOTER — 1x/2x 버튼 나란히 */
 .main-footer{display:flex;flex-direction:column;align-items:center;gap:12px;padding:4px 0 0}
 .dl-main-row{display:flex;gap:10px;align-items:center}
-.dl-btn-main{display:inline-flex;align-items:center;gap:6px;padding:12px 28px;background:var(--sf);color:var(--t2);border:1px solid var(--bd2);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.dl-btn-main{display:inline-flex;align-items:center;gap:6px;padding:0 28px;height:52px;background:var(--sf);color:var(--t2);border:1px solid var(--bd2);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
 .dl-btn-main svg{stroke:var(--t2)}
 .dl-btn-main:hover{background:var(--sf3);border-color:var(--t3)}
 .dl-btn-main:active{transform:scale(.97)}
@@ -355,12 +355,14 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
 .set-chip-del{background:none;border:1px solid var(--bd);border-radius:6px;cursor:pointer;color:var(--t4);font-size:12px;padding:2px 7px;line-height:1.4;transition:all .15s;font-family:inherit}
 .set-chip-del:hover{border-color:#dc2626;color:#dc2626;background:#fef2f2}
 .set-header{display:flex;align-items:center;gap:8px;padding:0 0 10px}
-.set-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--blue-lt);color:var(--blue)}
+.set-badge{display:none;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--blue-lt);color:var(--blue)}
 .set-badge.diagonal{background:#f3f0ff;color:#6d28d9}
 .set-badge.gradient{background:#fff7ed;color:#c2410c}
-.set-del-btn{margin-left:auto;background:none;border:1px solid var(--bd);border-radius:var(--r);padding:4px 10px;font-size:11px;color:var(--t4);cursor:pointer;font-family:inherit;transition:all .2s}
+.set-del-btn{margin-left:auto;display:inline-flex;align-items:center;gap:5px;padding:8px 16px;background:var(--sf);color:var(--t2);border:1px solid var(--bd2);border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
 .set-del-btn:hover{border-color:#dc2626;color:#dc2626}
-.set-bg-row{display:flex;align-items:center;gap:6px;padding:0 0 14px;flex-wrap:wrap}
+.set-type-header{display:flex;align-items:center;justify-content:space-between;padding:0 0 12px;}
+.set-type-title{font-size:15px;font-weight:700;color:var(--t1);}
+.set-bg-row-box{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--sf2);border:1px solid #F0F1F3;border-radius:var(--rlg);margin-bottom:14px;flex-wrap:wrap;}
 .set-bg-label-txt{font-size:12px;color:var(--t3);font-weight:500;flex-shrink:0}
 .set-bg-pick{width:26px;height:26px;border-radius:4px;border:1px solid var(--bd2);overflow:hidden;cursor:pointer;flex-shrink:0}
 .set-bg-pick input[type=color]{width:200%;height:200%;margin:-50%;cursor:pointer;border:none;padding:0}
@@ -369,9 +371,9 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
 .set-bg-hex:focus{border-color:var(--blue)}
 .set-bg-label{font-size:12px;color:var(--t3);padding:0 2px}
 .img-inline-btns{display:flex;gap:4px;margin-left:auto;flex-shrink:0;}
-.img-inline-btn{padding:4px 10px;border:1.5px solid var(--bd2);border-radius:var(--r);background:var(--sf);color:var(--t2);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.img-inline-btn{display:flex;align-items:center;padding:8px 16px;border:1px solid var(--bd2);border-radius:var(--r);background:var(--sf);color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap;}
 .img-inline-btn:hover{border-color:var(--blue);color:var(--blue);}
-.img-inline-btn.active{border-color:var(--blue);background:var(--blue-lt);color:var(--blue);}
+.img-inline-btn.active{border-color:var(--blue);background:var(--blue-lt);color:var(--blue);font-weight:700;}
 .img-sel-btn-group{display:flex;gap:4px;flex-wrap:wrap;padding:0 4px 4px;}
 .img-sel-num-btn{padding:6px 14px;border:1.5px solid var(--bd2);border-radius:var(--r);background:var(--sf);color:var(--t2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
 .img-sel-num-btn:hover{border-color:var(--blue);color:var(--blue);}
@@ -823,21 +825,23 @@ function renderAllSets(){
 
     var html=''
       +'<div class="preview-card">'
-        +'<div class="set-header">'
-          +'<span class="pc-title">PC 배너</span>'
-          +'<span class="pc-size">1240 × 200 px</span>'
-          +'<span class="set-badge '+badgeClass+'">'+typeLabel+'</span>'
+        +'<div class="set-type-header">'
+          +'<span class="set-type-title">'+typeLabel+'</span>'
           +'<button class="set-del-btn" onclick="removeBannerSet('+set.id+')">삭제</button>'
         +'</div>'
-        +'<div class="set-bg-row">'
+        +'<div class="set-bg-row-box">'
           +'<span class="set-bg-label-txt">배경색</span>'
           +'<div class="set-bg-pick"><input type="color" id="setBgPick_'+set.id+'" value="'+set.bgColor+'" oninput="onSetBgPick('+set.id+',this.value)"></div>'
           +'<span class="set-bg-hash">#</span>'
           +'<input type="text" class="set-bg-hex" id="setBgHex_'+set.id+'" value="'+set.bgColor.replace('#','').toUpperCase()+'" maxlength="6" oninput="onSetBgHex('+set.id+',this.value)">'
           +gradExtra
-          +'<div class="img-inline-btns" id="imgInlineBtns_'+set.id+'" style="'+(imgList.length>1?'':'display:none')+'">'+(imgList.length>1?imgList.map(function(item,i){  var activeId2=set.imgId||(imgList.length>0?imgList[0].id:null);  var active=item.id===activeId2;  return '<button class="img-inline-btn'+(active?' active':'')+'"    onclick="setImgForSet('+set.id+','+item.id+')">'    +'이미지 '+(i+1)+'</button>';}).join(''):'')+'</div>'
+          +'<div class="img-inline-btns" id="imgInlineBtns_'+set.id+'" style="'+(imgList.length>1?'':'display:none')+'">'+(imgList.length>1?imgList.map(function(item,i){  var activeId2=set.imgId||(imgList.length>0?imgList[0].id:null);  var active=item.id===activeId2;  return '<button class="img-inline-btn'+(active?' active':'')+'\"    onclick="setImgForSet('+set.id+','+item.id+')">'    +'이미지 '+(i+1)+'</button>';}).join(''):'')+'</div>'
         +'</div>'
-        +'<div class="bnr-stage" id="stagePC_'+set.id+'" style="overflow:hidden;width:100%;">'          +'<div id="bnrPC_'+set.id+'" style="width:1240px;height:200px;background:'+bgCss+';position:relative;overflow:hidden;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);transform-origin:top left;">'
+        +'<div class="set-header">'
+          +'<span class="pc-title">PC 배너</span>'
+          +'<span class="pc-size">1240 × 200 px</span>'
+        +'</div>'
+        +'<div class="bnr-stage" id="stagePC_'+set.id+'" style="overflow:hidden;width:100%;">'          +'<div id="bnrPC_'+set.id+'" style="width:1240px;height:200px;background:'+bgCss+';position:relative;overflow:hidden;transform-origin:top left;">'
             +'<div id="bgPC_'+set.id+'" style="position:absolute;inset:0;z-index:0;background:'+bgCss+';"></div>'
             +'<div id="ilPC_'+set.id+'" style="position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;"><img id="imgPC_'+set.id+'" style="position:absolute;display:none;" alt=""></div>'
             +'<div id="dtPC_'+set.id+'" style="position:absolute;inset:0;z-index:2;display:none;pointer-events:none;"></div>'
@@ -845,15 +849,12 @@ function renderAllSets(){
             +'<div id="ctPC_'+set.id+'" style="position:absolute;inset:0;z-index:5;pointer-events:none;"></div>'
           +'</div>'
         +'</div>'
-      +'</div>'
-      +'<div class="preview-card" style="margin-top:16px">'
-        +'<div class="set-header">'
+        +'<div class="set-header" style="margin-top:16px;">'
           +'<span class="pc-title">Mobile 배너</span>'
           +'<span class="pc-size">360 × 160 px</span>'
-          +'<span class="set-badge '+badgeClass+'">'+typeLabel+'</span>'
         +'</div>'
         +'<div class="bnr-stage" id="stageM_'+set.id+'" style="overflow:hidden;width:100%;">'
-          +'<div id="bnrM_'+set.id+'" style="width:360px;height:160px;background:'+bgCss+';position:relative;overflow:hidden;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);transform-origin:top left;">'
+          +'<div id="bnrM_'+set.id+'" style="width:360px;height:160px;background:'+bgCss+';position:relative;overflow:hidden;transform-origin:top left;">'
             +'<div id="bgM_'+set.id+'" style="position:absolute;inset:0;z-index:0;background:'+bgCss+';"></div>'
             +'<div id="ilM_'+set.id+'" style="position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;"><img id="imgM_'+set.id+'" style="position:absolute;display:none;" alt=""></div>'
             +'<div id="dtM_'+set.id+'" style="position:absolute;inset:0;z-index:2;display:none;pointer-events:none;"></div>'
@@ -1076,7 +1077,7 @@ function applySetStyle(id){
     }
 
     // 텍스트 컨텐츠
-    const color=set.type==='gradient'?'#fff':tc(set.bgColor||'#222222');
+    const color=tc(set.bgColor||'#222222');
     ct.style.cssText=`position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:${isPC?'36px 40px 33px 60px':'22px 20px 18px 20px'};height:${h}px;box-sizing:border-box;max-width:${imgSrc?(isPC?'55%':'51%'):'88%'};`;
 
     // 로고 (고정 높이 컨테이너로 레이아웃 안정화)
@@ -1177,7 +1178,19 @@ window.addEventListener('resize',()=>{
 const sfx=d=>d==='pc'?'PC':'M';
 function h2r(hex){const h=hex.replace('#','');return{r:parseInt(h.slice(0,2),16),g:parseInt(h.slice(2,4),16),b:parseInt(h.slice(4,6),16)};}
 function r2h(r,g,b){return[r,g,b].map(v=>Math.max(0,Math.min(255,v|0)).toString(16).padStart(2,'0')).join('');}
-function tc(hex){const{r,g,b}=h2r(hex.startsWith('#')?hex:'#'+hex);return(0.299*r+0.587*g+0.114*b)/255>0.55?'#111':'#fff';}
+function tc(hex){
+  if(!hex||typeof hex!=='string') return '#fff';
+  let h=hex.trim();
+  // #fff → #ffffff 변환
+  if(h.startsWith('#')) h=h.slice(1);
+  if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  if(h.length!==6) return '#fff';
+  const r=parseInt(h.slice(0,2),16);
+  const g=parseInt(h.slice(2,4),16);
+  const b=parseInt(h.slice(4,6),16);
+  if(isNaN(r)||isNaN(g)||isNaN(b)) return '#fff';
+  return (0.299*r+0.587*g+0.114*b)/255>0.55?'#111':'#fff';
+}
 function getBg(){return bannerType==='gradient'?`linear-gradient(${gradAngle}deg,#${gradStop1.replace('#','')},#${gradStop2.replace('#','')})`:bgColor;}
 function getTC(){return bannerType==='gradient'?'#fff':tc(bgColor);}
 function getScF(d){return Math.min(1,(document.getElementById('stage'+sfx(d)).clientWidth-28)/SIZES[d].w);}
@@ -1905,7 +1918,7 @@ function checkDownloadReady(){
   const mTitle=txt.m.title.trim();
   const mSub=txt.m.sub.trim();
   const hasSets=bannerSets.length>0;
-  const ready=!!(hasSets);
+  const ready=!!(hasSets && txt.pc.title.trim() && txt.pc.sub.trim() && txt.m.title.trim() && txt.m.sub.trim() && imgSrc && logoSrc);
   const b1=document.getElementById('dlBtn1');
   const b2=document.getElementById('dlBtn2');
   if(b1) b1.disabled=!ready;
