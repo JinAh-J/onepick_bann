@@ -2091,8 +2091,11 @@ async function openConfirm(){
   const origHTML=btn.innerHTML;
   btn.innerHTML='생성 중...';
 
+  // 팝업 차단 방지: 사용자 클릭 시점에 미리 창 열기
+  const newWin=window.open('','_blank');
+  if(newWin) newWin.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f2f3f6;color:#555;font-size:15px;">미리보기 생성 중...</body></html>');
+
   try{
-    // 각 세트별 PC+M 캡처
     const captures=[];
     const typeLabel={none:'배경없음',diagonal:'사선',gradient:'그라데이션'};
     for(const set of bannerSets){
@@ -2102,7 +2105,6 @@ async function openConfirm(){
     }
     const now=new Date().toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
 
-    // /api/preview 서버로 저장 (토큰은 서버 환경변수에서 관리)
     const resp=await fetch('/api/preview',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -2112,12 +2114,14 @@ async function openConfirm(){
     if(!resp.ok){throw new Error(data.error||'저장 실패');}
     const {id}=data;
 
-    // 미리보기 페이지 새 탭으로 열기
+    // 미리 열어둔 창에 URL 설정
     const shareUrl=window.location.origin+'/?preview='+id;
-    window.open(shareUrl,'_blank');
+    if(newWin) newWin.location.href=shareUrl;
+    else window.open(shareUrl,'_blank');
 
   }catch(err){
     console.error(err);
+    if(newWin) newWin.close();
     showToast('오류: '+err.message,'e',5000);
   }finally{
     btn.disabled=false;btn.innerHTML=origHTML;
