@@ -2199,19 +2199,21 @@ async function captureSetBanner(d,id){
   const bnr=document.getElementById('bnr'+S+'_'+id);
   if(!bnr) return null;
   const{w,h}=SIZES[d];
-  // zoom 임시 해제 (실제 크기로 캡처)
-  const origZoom=bnr.style.zoom||'';
-  bnr.style.zoom='';
-  await new Promise(r=>setTimeout(r,50));
+
+  // 실제 크기 복제본을 화면 밖에 배치해서 캡처
+  const clone=bnr.cloneNode(true);
+  clone.style.cssText=`position:fixed;left:-${w+100}px;top:0;width:${w}px;height:${h}px;zoom:1;transform:none;pointer-events:none;`;
+  document.body.appendChild(clone);
+  await new Promise(r=>setTimeout(r,100));
   try{
-    const canvas=await html2canvas(bnr,{
+    const canvas=await html2canvas(clone,{
       scale:1,useCORS:true,allowTaint:true,
-      backgroundColor:null,width:w,height:h,logging:false,
-      imageTimeout:0
+      backgroundColor:null,width:w,height:h,
+      logging:false,imageTimeout:0
     });
     return canvas.toDataURL('image/png');
   }finally{
-    bnr.style.zoom=origZoom;
+    document.body.removeChild(clone);
   }
 }
 
