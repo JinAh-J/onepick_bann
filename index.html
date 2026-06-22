@@ -101,6 +101,7 @@ html,body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg)
 .up-preview{display:flex;flex-direction:column;gap:0}
 .up-preview-wrap{position:relative;border-radius:8px;overflow:hidden;cursor:pointer;height:120px;width:100%}
 .up-thumb{width:100%;height:100%;object-fit:cover;display:block;background:var(--sf3);border:1px solid var(--bd);border-radius:8px;transition:filter .18s}
+.up-thumb.logo-thumb{object-fit:contain;}
 .up-preview-wrap:hover .up-thumb{filter:brightness(.45)}
 .up-hover-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;transition:opacity .18s;pointer-events:none;border-radius:8px}
 .up-preview-wrap:hover .up-hover-ov{opacity:1;pointer-events:auto}
@@ -160,18 +161,18 @@ input[type=range]{flex:1;height:4px;accent-color:var(--blue);cursor:pointer}
 .slack-info{font-size:12px;color:#5b21b6;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:var(--r);padding:8px 10px;line-height:1.5}
 
 /* MAIN */
-.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+.main{flex:1;overflow-y:auto;overflow-x:auto;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
 .main::-webkit-scrollbar{width:4px}
 .main::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px}
-.main-body{padding:20px 24px 40px;display:flex;flex-direction:column}
+.main-body{padding:20px 24px 40px;display:flex;flex-direction:column;align-items:center;}
 
 /* HEADER */
-.preview-header{display:flex;align-items:center;justify-content:space-between;padding:0 0 14px}
+.preview-header{display:flex;align-items:center;justify-content:space-between;padding:0 0 14px;width:1288px;max-width:1288px;box-sizing:border-box;}
 .preview-header-title{font-size:16px;font-weight:700;color:var(--t1)}
 .preview-select-count{font-size:13px;color:var(--blue);font-weight:500}
 
 /* PREVIEW CARDS */
-.preview-card{background:var(--sf);border-radius:var(--rxl);border:none;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden;padding:24px;margin-bottom:16px}
+.preview-card{background:var(--sf);border-radius:var(--rxl);border:none;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden;padding:24px;margin-bottom:16px;display:flex;flex-direction:column;align-items:flex-start;width:1288px;max-width:1288px;box-sizing:border-box;}
 .pc-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;flex-wrap:wrap;gap:8px}
 .pc-title-row{display:flex;align-items:center;gap:10px}
 .pc-title{font-size:14px;font-weight:600;color:#333}
@@ -184,7 +185,7 @@ input[type=range]{flex:1;height:4px;accent-color:var(--blue);cursor:pointer}
 
 /* STAGE */
 .stage{display:block;background:var(--sf);padding:0;overflow:hidden;}
-.bnr-stage{display:block;overflow:hidden;}
+.bnr-stage{display:flex;justify-content:flex-start;overflow:visible;width:100%;flex-shrink:0;}
 .scaler{transform-origin:top center;position:relative}
 
 /* BANNER */
@@ -337,14 +338,14 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
 
 /* 배너 타입 추가 버튼 */
 .type-add-btns{display:flex;flex-direction:column;gap:6px}
-.type-add-btn{display:flex;align-items:center;gap:8px;padding:10px 14px;border:2px dashed var(--bd3);border-radius:var(--rlg);background:var(--sf4);color:var(--t2);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s;text-align:left;}
+.type-add-btn{display:flex;align-items:center;gap:8px;height:42px;padding:0 14px;border:2px dashed var(--bd3);border-radius:var(--rlg);background:var(--sf4);color:var(--t2);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s;text-align:left;box-sizing:border-box;}
 .type-add-btn:hover{border-color:var(--blue);color:var(--blue);background:#F0F4FF;}
 .type-add-btn.has-sets{border-color:var(--blue);border-style:solid;color:var(--blue);background:#F0F4FF;}
 .type-add-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--blue);color:#fff;font-size:10px;font-weight:700;padding:0 5px;}
 .type-add-btn .type-add-right{display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0;}
 .type-add-ico{font-size:14px;width:18px;flex-shrink:0}
 .set-list{display:none;flex-direction:column;gap:0;margin-top:10px;position:relative;}
-.set-chip{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fff;border:1px solid var(--bd);border-radius:var(--rlg);font-size:12px;color:var(--t2);box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:default;user-select:none;transition:opacity .15s;position:relative;z-index:1;}
+.set-chip{display:flex;align-items:center;gap:8px;height:42px;padding:0 12px;background:#fff;border:1px solid var(--bd);border-radius:var(--rlg);font-size:12px;color:var(--t2);box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:default;user-select:none;transition:opacity .15s;position:relative;z-index:1;box-sizing:border-box;}
 .set-chip.dragging{opacity:.35;}
 .set-chip-drop-zone{height:6px;border-radius:3px;background:transparent;opacity:0;transition:opacity .15s;pointer-events:auto;margin:0;}
 .set-chip-drop-zone.active{opacity:1;background:var(--blue);}
@@ -354,15 +355,24 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
 .set-chip-typenum{font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-lt);border-radius:4px;padding:1px 5px;margin-left:5px;}
 .set-chip-del{background:none;border:1px solid var(--bd);border-radius:6px;cursor:pointer;color:var(--t4);font-size:12px;padding:2px 7px;line-height:1.4;transition:all .15s;font-family:inherit}
 .set-chip-del:hover{border-color:#dc2626;color:#dc2626;background:#fef2f2}
-.set-header{display:flex;align-items:center;gap:8px;padding:0 0 10px}
+.set-header{display:flex;align-items:center;gap:8px;padding:0 0 10px;width:100%;}
 .set-badge{display:none;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--blue-lt);color:var(--blue)}
 .set-badge.diagonal{background:#f3f0ff;color:#6d28d9}
 .set-badge.gradient{background:#fff7ed;color:#c2410c}
 .set-del-btn{margin-left:auto;display:inline-flex;align-items:center;gap:5px;padding:8px 16px;background:var(--sf);color:var(--t2);border:1px solid var(--bd2);border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
 .set-del-btn:hover{border-color:#dc2626;color:#dc2626}
-.set-type-header{display:flex;align-items:center;justify-content:space-between;padding:0 0 12px;}
+.bg-chip{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--bd2);cursor:pointer;flex-shrink:0;}
+.icon-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;border:1px solid var(--bd2);background:var(--sf);color:var(--t2);cursor:pointer;flex-shrink:0;transition:all .15s;}
+.icon-btn:hover{background:var(--sf3);border-color:var(--t3);}
+.color-popup{position:absolute;z-index:999;background:#fff;border:1px solid var(--bd2);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:12px;display:flex;align-items:center;gap:6px;}
+.color-popup.grad-popup{flex-direction:column;align-items:stretch;gap:10px;min-width:200px;}
+.set-type-header{display:flex;align-items:center;justify-content:space-between;padding:0 0 12px;width:100%;}
 .set-type-title{font-size:15px;font-weight:700;color:var(--t1);}
-.set-bg-row-box{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--sf2);border:1px solid #F0F1F3;border-radius:var(--rlg);margin-bottom:14px;flex-wrap:wrap;}
+.grad-pos-wrap{display:flex;align-items:center;gap:6px;margin-left:4px;}
+.grad-pos-sl{width:80px;height:4px;accent-color:var(--blue);cursor:pointer;}
+.grad-pos-val{font-size:11px;color:var(--t3);min-width:28px;}
+.set-type-title{font-size:15px;font-weight:700;color:var(--t1);}
+.set-bg-row-box{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--sf2);border:1px solid #F0F1F3;border-radius:var(--rlg);margin-bottom:14px;flex-wrap:wrap;width:100%;box-sizing:border-box;}
 .set-bg-label-txt{font-size:12px;color:var(--t3);font-weight:500;flex-shrink:0}
 .set-bg-pick{width:26px;height:26px;border-radius:4px;border:1px solid var(--bd2);overflow:hidden;cursor:pointer;flex-shrink:0}
 .set-bg-pick input[type=color]{width:200%;height:200%;margin:-50%;cursor:pointer;border:none;padding:0}
@@ -485,7 +495,7 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
       </div>
       <div id="logoPreview" class="up-preview" style="display:none">
         <div class="up-preview-wrap" ondragover="event.preventDefault()" ondrop="handleLogoDrop(event)">
-          <img id="logoThumb" class="up-thumb" src="" alt="">
+          <img id="logoThumb" class="up-thumb logo-thumb" src="" alt="">
           <button class="up-del-btn" onclick="deleteLogo()" title="삭제">✕</button>
           <div class="up-hover-ov">
             <div class="up-ov-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v10M7 9l5-5 5 5"/></svg>로고 변경</div>
@@ -505,16 +515,16 @@ textarea#titM::placeholder{color:rgba(255,255,255,.35);white-space:pre-line;opac
     <div class="sec-head"><div class="sec-num">4</div><span class="sec-label">텍스트</span></div>
     <div class="sec-body">
       <div class="flbl">PC 메인 텍스트 <span class="fhint">최대 20자</span></div>
-      <input type="text" class="finput" id="pcTitleIn" maxlength="20" placeholder="메인 텍스트를 입력하세요" oninput="onSidebarText('pc','title',this.value)">
+      <input type="text" class="finput" id="pcTitleIn" maxlength="20" placeholder="메인 텍스트를 입력하세요" oninput="onSidebarText('pc','title',this.value)" style="margin-top:-8px">
       <div class="flbl" style="margin-top:8px">PC 서브 텍스트 <span class="fhint">최대 30자</span></div>
-      <input type="text" class="finput" id="pcSubIn" maxlength="30" placeholder="서브 텍스트를 입력하세요" oninput="onSidebarText('pc','sub',this.value)">
+      <input type="text" class="finput" id="pcSubIn" maxlength="30" placeholder="서브 텍스트를 입력하세요" oninput="onSidebarText('pc','sub',this.value)" style="margin-top:-8px">
       <div style="height:1px;background:var(--bd);margin:12px 0"></div>
       <div class="flbl">M 메인 텍스트 줄 1 <span class="fhint">최대 10자</span></div>
-      <input type="text" class="finput" id="mTitle1In" maxlength="10" placeholder="첫째 줄" oninput="onSidebarMTitle()">
+      <input type="text" class="finput" id="mTitle1In" maxlength="10" placeholder="첫째 줄" oninput="onSidebarMTitle()" style="margin-top:-8px">
       <div class="flbl" style="margin-top:8px">M 메인 텍스트 줄 2 <span class="fhint">최대 10자</span></div>
-      <input type="text" class="finput" id="mTitle2In" maxlength="10" placeholder="둘째 줄" oninput="onSidebarMTitle()">
+      <input type="text" class="finput" id="mTitle2In" maxlength="10" placeholder="둘째 줄" oninput="onSidebarMTitle()" style="margin-top:-8px">
       <div class="flbl" style="margin-top:8px">M 서브 텍스트 <span class="fhint">최대 14자</span></div>
-      <input type="text" class="finput" id="mSubIn" maxlength="14" placeholder="서브 텍스트를 입력하세요" oninput="onSidebarText('m','sub',this.value)">
+      <input type="text" class="finput" id="mSubIn" maxlength="14" placeholder="서브 텍스트를 입력하세요" oninput="onSidebarText('m','sub',this.value)" style="margin-top:-8px">
     </div>
   </div>
 
@@ -680,8 +690,8 @@ function addBannerSet(type){
     id,type,bgColor:'#222222',gradStop1:'#222222',gradStop2:'transparent',gradAngle:90,
     imgId: imgList.length>0 ? imgList[0].id : null,
     dev:{
-      pc:{x:30,y:0,scale:100},
-      m:{x:25,y:0,scale:100}
+      pc:{x:30,y:0,scale:100,gradX:0},
+      m:{x:25,y:0,scale:100,gradX:0}
     }
   };
   bannerSets.push(set);
@@ -822,6 +832,9 @@ function renderAllSets(){
 
     var gradExtra='';
     // 그라데이션 끝컬러는 투명으로 고정 - 히든처리
+    // 그라데이션 위치 팝업 콘텐츠 (PC/M 각각)
+    var gradPC=(set.dev&&set.dev.pc&&set.dev.pc.gradX!=null?set.dev.pc.gradX:0);
+    var gradM=(set.dev&&set.dev.m&&set.dev.m.gradX!=null?set.dev.m.gradX:0);
 
     var html=''
       +'<div class="preview-card">'
@@ -830,18 +843,15 @@ function renderAllSets(){
           +'<button class="set-del-btn" onclick="removeBannerSet('+set.id+')">삭제</button>'
         +'</div>'
         +'<div class="set-bg-row-box">'
-          +'<span class="set-bg-label-txt">배경색</span>'
-          +'<div class="set-bg-pick"><input type="color" id="setBgPick_'+set.id+'" value="'+set.bgColor+'" oninput="onSetBgPick('+set.id+',this.value)"></div>'
-          +'<span class="set-bg-hash">#</span>'
-          +'<input type="text" class="set-bg-hex" id="setBgHex_'+set.id+'" value="'+set.bgColor.replace('#','').toUpperCase()+'" maxlength="6" oninput="onSetBgHex('+set.id+',this.value)">'
-          +gradExtra
+          +'<div class="bg-chip" id="setBgChip_'+set.id+'" style="background:'+set.bgColor+';" onclick="toggleBgPopup('+set.id+')" title="배경색"></div>'
+          +(set.type==='gradient'?'<button class="icon-btn" data-gradpc="'+gradPC+'" data-gradm="'+gradM+'" onclick="toggleGradPopup('+set.id+',this)" title="그라데이션 위치"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18"/></svg></button>':'')
           +'<div class="img-inline-btns" id="imgInlineBtns_'+set.id+'" style="'+(imgList.length>1?'':'display:none')+'">'+(imgList.length>1?imgList.map(function(item,i){  var activeId2=set.imgId||(imgList.length>0?imgList[0].id:null);  var active=item.id===activeId2;  return '<button class="img-inline-btn'+(active?' active':'')+'\"    onclick="setImgForSet('+set.id+','+item.id+')">'    +'이미지 '+(i+1)+'</button>';}).join(''):'')+'</div>'
         +'</div>'
         +'<div class="set-header">'
           +'<span class="pc-title">PC 배너</span>'
           +'<span class="pc-size">1240 × 200 px</span>'
         +'</div>'
-        +'<div class="bnr-stage" id="stagePC_'+set.id+'" style="overflow:hidden;width:100%;">'          +'<div id="bnrPC_'+set.id+'" style="width:1240px;height:200px;background:'+bgCss+';position:relative;overflow:hidden;transform-origin:top left;">'
+        +'<div class="bnr-stage" id="stagePC_'+set.id+'" style="overflow:hidden;width:100%;">'          +'<div id="bnrPC_'+set.id+'" style="width:1240px;height:200px;flex-shrink:0;background:'+bgCss+';position:relative;overflow:hidden;transform-origin:top left;">'
             +'<div id="bgPC_'+set.id+'" style="position:absolute;inset:0;z-index:0;background:'+bgCss+';"></div>'
             +'<div id="ilPC_'+set.id+'" style="position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;"><img id="imgPC_'+set.id+'" style="position:absolute;display:none;" alt=""></div>'
             +'<div id="dtPC_'+set.id+'" style="position:absolute;inset:0;z-index:2;display:none;pointer-events:none;"></div>'
@@ -854,7 +864,7 @@ function renderAllSets(){
           +'<span class="pc-size">360 × 160 px</span>'
         +'</div>'
         +'<div class="bnr-stage" id="stageM_'+set.id+'" style="overflow:hidden;width:100%;">'
-          +'<div id="bnrM_'+set.id+'" style="width:360px;height:160px;background:'+bgCss+';position:relative;overflow:hidden;transform-origin:top left;">'
+          +'<div id="bnrM_'+set.id+'" style="width:360px;height:160px;flex-shrink:0;background:'+bgCss+';position:relative;overflow:hidden;transform-origin:top left;">'
             +'<div id="bgM_'+set.id+'" style="position:absolute;inset:0;z-index:0;background:'+bgCss+';"></div>'
             +'<div id="ilM_'+set.id+'" style="position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;"><img id="imgM_'+set.id+'" style="position:absolute;display:none;" alt=""></div>'
             +'<div id="dtM_'+set.id+'" style="position:absolute;inset:0;z-index:2;display:none;pointer-events:none;"></div>'
@@ -1013,7 +1023,11 @@ function applySetStyle(id){
     } else if(set.type==='gradient'){
       dt.style.display='none'; dt.innerHTML='';
       const c1=set.bgColor||set.gradStop1||'#222222';
-      const goGrad='linear-gradient(90deg,'+c1+' 0%,'+c1+' 50%,rgba(0,0,0,0) 80%,rgba(0,0,0,0) 100%)';
+      const gradX=(set.dev&&set.dev[d]&&set.dev[d].gradX!=null?set.dev[d].gradX:0);
+      const g1=Math.max(0,Math.min(100,0+gradX));
+      const g2=Math.max(0,Math.min(100,50+gradX));
+      const g3=Math.max(0,Math.min(100,80+gradX));
+      const goGrad='linear-gradient(90deg,'+c1+' '+g1+'%,'+c1+' '+g2+'%,rgba(0,0,0,0) '+g3+'%,rgba(0,0,0,0) 100%)';
       go.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:3;background:'+goGrad+';display:block;';
     } else {
       dt.style.display='none'; dt.innerHTML='';
@@ -2008,6 +2022,99 @@ function toggleGuidePanel(d){
 }
 
 /* 사이드바 텍스트 입력 핸들러 */
+function closeAllPopups(){
+  document.getElementById('bgColorPopup')?.remove();
+  document.getElementById('gradPosPopup')?.remove();
+}
+
+function toggleBgPopup(setId){
+  const existing=document.getElementById('bgColorPopup');
+  if(existing){ const wasFor=existing.dataset.setId; closeAllPopups(); if(wasFor==String(setId)) return; }
+  const set=bannerSets.find(s=>s.id===setId);
+  if(!set) return;
+  const chip=document.getElementById('setBgChip_'+setId);
+  if(!chip) return;
+  const rect=chip.getBoundingClientRect();
+  const pop=document.createElement('div');
+  pop.id='bgColorPopup';
+  pop.className='color-popup';
+  pop.dataset.setId=setId;
+  pop.style.top=(rect.bottom+window.scrollY+8)+'px';
+  pop.style.left=(rect.left+window.scrollX)+'px';
+  pop.innerHTML=
+    '<input type="color" id="popBgPick_'+setId+'" value="'+set.bgColor+'" oninput="onSetBgPick('+setId+',this.value);syncPopupColor('+setId+')">'
+    +'<span class="set-bg-hash">#</span>'
+    +'<input type="text" class="set-bg-hex" id="popBgHex_'+setId+'" value="'+set.bgColor.replace('#','').toUpperCase()+'" maxlength="6" oninput="onSetBgHex('+setId+',this.value);syncPopupColor('+setId+')">';
+  document.body.appendChild(pop);
+  setTimeout(()=>{
+    document.addEventListener('click', function handler(e){
+      if(!pop.contains(e.target) && e.target.id!=='setBgChip_'+setId){
+        pop.remove();
+        document.removeEventListener('click',handler);
+      }
+    });
+  },0);
+}
+
+function syncPopupColor(setId){
+  const set=bannerSets.find(s=>s.id===setId);
+  if(!set) return;
+  const chip=document.getElementById('setBgChip_'+setId);
+  if(chip) chip.style.background=set.bgColor;
+  const pick=document.getElementById('popBgPick_'+setId);
+  const hex=document.getElementById('popBgHex_'+setId);
+  if(pick) pick.value=set.bgColor;
+  if(hex) hex.value=set.bgColor.replace('#','').toUpperCase();
+}
+
+function toggleGradPopup(setId, btnEl){
+  const existing=document.getElementById('gradPosPopup');
+  if(existing){ const wasFor=existing.dataset.setId; closeAllPopups(); if(wasFor==String(setId)) return; }
+  const set=bannerSets.find(s=>s.id===setId);
+  if(!set) return;
+  const gradPC=(set.dev&&set.dev.pc&&set.dev.pc.gradX!=null?set.dev.pc.gradX:0);
+  const gradM=(set.dev&&set.dev.m&&set.dev.m.gradX!=null?set.dev.m.gradX:0);
+  const rect=btnEl.getBoundingClientRect();
+  const pop=document.createElement('div');
+  pop.id='gradPosPopup';
+  pop.className='color-popup grad-popup';
+  pop.dataset.setId=setId;
+  pop.style.top=(rect.bottom+window.scrollY+8)+'px';
+  pop.style.left=(rect.left+window.scrollX)+'px';
+  pop.innerHTML=
+    '<div class="grad-pos-wrap">'
+      +'<span class="set-bg-label-txt">PC 위치</span>'
+      +'<input type="range" class="grad-pos-sl" min="-40" max="40" value="'+gradPC+'" step="1" oninput="onGradX('+setId+',\'pc\',this.value)">'
+      +'<span class="grad-pos-val" id="gradXVal_pc_'+setId+'">'+gradPC+'%</span>'
+    +'</div>'
+    +'<div class="grad-pos-wrap">'
+      +'<span class="set-bg-label-txt">M 위치</span>'
+      +'<input type="range" class="grad-pos-sl" min="-40" max="40" value="'+gradM+'" step="1" oninput="onGradX('+setId+',\'m\',this.value)">'
+      +'<span class="grad-pos-val" id="gradXVal_m_'+setId+'">'+gradM+'%</span>'
+    +'</div>';
+  document.body.appendChild(pop);
+  setTimeout(()=>{
+    document.addEventListener('click', function handler(e){
+      if(!pop.contains(e.target) && e.target!==btnEl && !btnEl.contains(e.target)){
+        pop.remove();
+        document.removeEventListener('click',handler);
+      }
+    });
+  },0);
+}
+
+function onGradX(id, d, val){
+  const set=bannerSets.find(s=>s.id===id);
+  if(!set) return;
+  if(!set.dev) set.dev={pc:{x:30,y:0,scale:100,gradX:0},m:{x:25,y:0,scale:100,gradX:0}};
+  const v=parseFloat(val);
+  if(!set.dev[d]) set.dev[d]={x:30,y:0,scale:100,gradX:0};
+  set.dev[d].gradX=v;
+  const el=document.getElementById('gradXVal_'+d+'_'+id);
+  if(el) el.textContent=v+'%';
+  applySetStyle(id);
+}
+
 function onSetSl(id,d,prop,val){
   const set=bannerSets.find(s=>s.id===id);
   if(!set) return;
