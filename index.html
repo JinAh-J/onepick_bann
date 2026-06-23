@@ -227,9 +227,11 @@ input[type=range]{flex:1;height:4px;accent-color:var(--blue);cursor:pointer}
   position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
   display:none;align-items:center;gap:8px;
   background:rgba(0,0,0,.65);border-radius:20px;padding:6px 14px;
-  z-index:20;pointer-events:auto;white-space:nowrap;
+  z-index:50;pointer-events:auto;white-space:nowrap;user-select:none;
 }
-.bnr-hover-ctrl input[type=range]{width:100px;height:4px;accent-color:#fff;cursor:pointer;}
+.bnr-hover-ctrl input[type=range]{width:100px;height:4px;accent-color:#fff;cursor:pointer;position:relative;z-index:51;pointer-events:auto;}
+.hctrl-val-input{font-size:11px;color:#fff;width:36px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:4px;padding:2px 4px;text-align:center;font-family:inherit;}
+.hctrl-val-input:focus{outline:none;border-color:#fff;background:rgba(255,255,255,.25);}
 .bnr:hover .bnr-hover-ctrl{display:flex;}
 
 /* TEXT EDIT HOVER */
@@ -851,9 +853,14 @@ function renderAllSets(){
           +'<span class="pc-title">PC 배너</span>'
           +'<span class="pc-size">1240 × 200 px</span>'
         +'</div>'
-        +'<div class="bnr-stage" id="stagePC_'+set.id+'" style="overflow:hidden;width:100%;">'          +'<div id="bnrPC_'+set.id+'" style="width:1240px;height:200px;flex-shrink:0;background:'+bgCss+';position:relative;overflow:hidden;transform-origin:top left;">'
+        +'<div class="bnr-stage" id="stagePC_'+set.id+'" style="overflow:hidden;width:100%;">'          +'<div id="bnrPC_'+set.id+'" class="bnr" style="width:1240px;height:200px;flex-shrink:0;background:'+bgCss+';position:relative;overflow:hidden;transform-origin:top left;">'
             +'<div id="bgPC_'+set.id+'" style="position:absolute;inset:0;z-index:0;background:'+bgCss+';"></div>'
-            +'<div id="ilPC_'+set.id+'" style="position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;"><img id="imgPC_'+set.id+'" style="position:absolute;display:none;" alt=""></div>'
+            +'<div id="ilPC_'+set.id+'" style="position:absolute;inset:0;z-index:1;overflow:visible;pointer-events:none;"><img id="imgPC_'+set.id+'" style="position:absolute;display:none;" alt=""></div>'
+            +'<div id="hctrlPC_'+set.id+'" class="bnr-hover-ctrl">'
+              +'<span style="font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;">크기</span>'
+              +'<input type="range" min="1" max="200" value="100" step="1" oninput="onSetSl('+set.id+',\'pc\',\'scale\',this.value)" id="hctrlRPC_'+set.id+'">'
+              +'<input type="text" id="hctrlVPC_'+set.id+'" class="hctrl-val-input" value="100%" onfocus="this.select()" onkeydown="if(event.key===\'Enter\')this.blur()" onblur="onHctrlValBlur('+set.id+',\'pc\',this)">'
+            +'</div>'
             +'<div id="dtPC_'+set.id+'" style="position:absolute;inset:0;z-index:2;display:none;pointer-events:none;"></div>'
             +'<div id="goPC_'+set.id+'" style="position:absolute;inset:0;z-index:3;display:none;pointer-events:none;"></div>'
             +'<div id="ctPC_'+set.id+'" style="position:absolute;inset:0;z-index:5;pointer-events:none;"></div>'
@@ -864,9 +871,14 @@ function renderAllSets(){
           +'<span class="pc-size">360 × 160 px</span>'
         +'</div>'
         +'<div class="bnr-stage" id="stageM_'+set.id+'" style="overflow:hidden;width:100%;">'
-          +'<div id="bnrM_'+set.id+'" style="width:360px;height:160px;flex-shrink:0;background:'+bgCss+';position:relative;overflow:hidden;transform-origin:top left;">'
+          +'<div id="bnrM_'+set.id+'" class="bnr" style="width:360px;height:160px;flex-shrink:0;background:'+bgCss+';position:relative;overflow:hidden;transform-origin:top left;">'
             +'<div id="bgM_'+set.id+'" style="position:absolute;inset:0;z-index:0;background:'+bgCss+';"></div>'
-            +'<div id="ilM_'+set.id+'" style="position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;"><img id="imgM_'+set.id+'" style="position:absolute;display:none;" alt=""></div>'
+            +'<div id="ilM_'+set.id+'" style="position:absolute;inset:0;z-index:1;overflow:visible;pointer-events:none;"><img id="imgM_'+set.id+'" style="position:absolute;display:none;" alt=""></div>'
+            +'<div id="hctrlM_'+set.id+'" class="bnr-hover-ctrl">'
+              +'<span style="font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;">크기</span>'
+              +'<input type="range" min="1" max="200" value="100" step="1" oninput="onSetSl('+set.id+',\'m\',\'scale\',this.value)" id="hctrlRM_'+set.id+'">'
+              +'<input type="text" id="hctrlVM_'+set.id+'" class="hctrl-val-input" value="100%" onfocus="this.select()" onkeydown="if(event.key===\'Enter\')this.blur()" onblur="onHctrlValBlur('+set.id+',\'m\',this)">'
+            +'</div>'
             +'<div id="dtM_'+set.id+'" style="position:absolute;inset:0;z-index:2;display:none;pointer-events:none;"></div>'
             +'<div id="goM_'+set.id+'" style="position:absolute;inset:0;z-index:3;display:none;pointer-events:none;"></div>'
             +'<div id="ctM_'+set.id+'" style="position:absolute;inset:0;z-index:5;pointer-events:none;"></div>'
@@ -889,11 +901,15 @@ function renderAllSets(){
       bnr.addEventListener('mousedown',function(e){
         if(!imgSrc) return;
         // hover ctrl 슬라이더 클릭은 드래그 시작 안 함
-        if(e.target.tagName==='INPUT'||e.target.closest('.bnr-hover-ctrl')) return;
+        if(e.target.tagName==='INPUT'||e.target.tagName==='BUTTON'||e.target.closest('.bnr-hover-ctrl')) return;
         if(!set.dev) set.dev={pc:{x:30,y:0,scale:80},m:{x:25,y:0,scale:80}};
         drag=true;sx=e.clientX;sy=e.clientY;ox=set.dev[d].x;oy=set.dev[d].y;
         bnr.style.cursor='grabbing';e.preventDefault();
       });
+      var hctrlWrap=document.getElementById('hctrl'+S+'_'+set.id);
+      if(hctrlWrap){
+        hctrlWrap.addEventListener('mousedown',function(e){ e.stopPropagation(); });
+      }
       document.addEventListener('mousemove',function(e){
         if(!drag) return;
         var mainEl=document.querySelector('.main-body');
@@ -911,12 +927,12 @@ function renderAllSets(){
         if(!imgSrc) return;
         e.preventDefault();
         if(!set.dev) set.dev={pc:{x:30,y:0,scale:80},m:{x:25,y:0,scale:80}};
-        set.dev[d].scale=Math.max(10,Math.min(400,set.dev[d].scale+(e.deltaY<0?5:-5)));
+        set.dev[d].scale=Math.max(1,Math.min(200,set.dev[d].scale+(e.deltaY<0?1:-1)));
         var S2=d==='pc'?'PC':'M';
         var hctrlR=document.getElementById('hctrlR'+S2+'_'+set.id);
         var hctrlV=document.getElementById('hctrlV'+S2+'_'+set.id);
         if(hctrlR) hctrlR.value=set.dev[d].scale;
-        if(hctrlV) hctrlV.textContent=Math.round(set.dev[d].scale)+'%';
+        if(hctrlV) hctrlV.value=Math.round(set.dev[d].scale)+'%';
         applySetStyle(set.id);
       },{passive:false});
     });
@@ -1037,6 +1053,7 @@ function applySetStyle(id){
     // 이미지 있으면 il/bnr 항상 pointer-events 활성화
     const curImgSrc=getSetImgSrc(set);
     const curImgRatio=getSetImgRatio(set);
+    const curImgNatH=getSetImgNatH(set);
 
     if(curImgSrc){
       if(ilEl) ilEl.style.pointerEvents='auto';
@@ -1047,15 +1064,22 @@ function applySetStyle(id){
     const setDev=(set.dev&&set.dev[d])?set.dev[d]:{x:30,y:0,scale:100};
     const bnrEl3=bnrEl2;
 
-    function applyImgStyle(natRatio){
-      // 사선 PC: 디폴트 width 560px 기준 scale 계산
+    function applyImgStyle(natRatio, natH){
+      // sc(%)는 이제 "이미지 원본 픽셀 높이" 기준: bh2 = natH * (sc/100)
       let sc=setDev.scale;
-      if(set.type==='diagonal'&&isPC&&sc===100){
-        // width 560px → height = 560/natRatio → scale = (560/natRatio)/h*100
-        sc=Math.round((560/natRatio)/h*100);
+      const effNatH=natH>0?natH:h; // natH 없으면 배너 높이로 폴백(레거시 안전장치)
+      if(!setDev._natInit){
+        // 최초 1회: 기존 "배너 높이 기준 100%" 시각 결과를 유지하면서 새 기준(%)으로 환산
+        let legacySc=setDev.scale;
+        if(set.type==='diagonal'&&isPC&&legacySc===100){
+          legacySc=Math.round((560/natRatio)/h*100); // 기존 폭 560px 기준 계산
+        }
+        const visualBh=h*(legacySc/100); // 기존 공식으로 나온 실제 높이(px)
+        sc=effNatH>0?Math.round(visualBh/effNatH*100):legacySc;
         setDev.scale=sc;
+        setDev._natInit=true;
       }
-      const bh2=h*(sc/100);
+      const bh2=effNatH*(sc/100);
       const bw=bh2*natRatio;
       const ox=(setDev.x/100)*SIZES[d].w;
       const oy=(setDev.y/100)*h;
@@ -1063,7 +1087,7 @@ function applySetStyle(id){
       const hctrlR=document.getElementById('hctrlR'+S+'_'+id);
       const hctrlV=document.getElementById('hctrlV'+S+'_'+id);
       if(hctrlR) hctrlR.value=setDev.scale;
-      if(hctrlV) hctrlV.textContent=Math.round(setDev.scale)+'%';
+      if(hctrlV) hctrlV.value=Math.round(setDev.scale)+'%';
     }
 
     if(curImgSrc&&img){
@@ -1077,11 +1101,11 @@ function applySetStyle(id){
       }
       const ratio=curImgRatio>0?curImgRatio:(img.naturalWidth>0?img.naturalWidth/img.naturalHeight:0);
       if(ratio>0){
-        applyImgStyle(ratio);
+        applyImgStyle(ratio, curImgNatH||img.naturalHeight||0);
       } else {
         img.onload=function(){
           imgNatRatio=img.naturalWidth/img.naturalHeight||1;
-          applyImgStyle(imgNatRatio);
+          applyImgStyle(imgNatRatio, img.naturalHeight||0);
         };
       }
     } else {
@@ -1266,7 +1290,7 @@ function onRszMove(e){
   const signY=(rsz.corner==='sw'||rsz.corner==='se')?1:-1;
   const delta=(dx*signX+dy*signY)/2;
   const baseH=h*(rsz.initScale/100);const newH=Math.max(10,baseH+delta);
-  dev[d].scale=Math.max(10,Math.min(400,newH/h*100));
+  dev[d].scale=Math.max(10,Math.min(200,newH/h*100));
   syncSbBar(d);syncSl(d);applyImgT(d);e.preventDefault();
 }
 function onRszUp(){rsz.on=false;}
@@ -1302,7 +1326,7 @@ function resetDev(d){dev[d]={x:0,y:0,scale:100,ratio:100};syncSl(d);applyImgT(d)
 
 /* FILE HANDLERS */
 /* 다중 이미지 */
-let imgList=[];        // [{id, src, name, natRatio}]
+let imgList=[];        // [{id, src, name, natRatio, natH}]
 let activeImgId=null;  // 현재 선택된 이미지 id
 let nextImgId=1;
 
@@ -1406,7 +1430,7 @@ function handleImgAdd(e){
     tmpImg.onload=function(){
       const ratio=tmpImg.naturalWidth/tmpImg.naturalHeight||1;
       const id=nextImgId++;
-      imgList.push({id,src,name:f.name,natRatio:ratio});
+      imgList.push({id,src,name:f.name,natRatio:ratio,natH:tmpImg.naturalHeight||1});
       // 첫 이미지면 모든 세트에 자동 적용
       if(imgList.length===1){
         bannerSets.forEach(function(s){ s.imgId=id; });
@@ -1868,7 +1892,7 @@ function onSbSlider(d, val){
   applyImgT(d);
 }
 function stepScale(d, delta){
-  dev[d].scale = Math.max(10, Math.min(400, dev[d].scale + delta));
+  dev[d].scale = Math.max(10, Math.min(200, dev[d].scale + delta));
   syncSbBar(d);
   applyImgT(d);
 }
@@ -1889,6 +1913,11 @@ function getSetImgSrc(set){
 function getSetImgRatio(set){
   if(set.imgId){ const item=imgList.find(i=>i.id===set.imgId); if(item) return item.natRatio||imgNatRatio||1; }
   return imgNatRatio||1;
+}
+function getSetImgNatH(set){
+  if(set.imgId){ const item=imgList.find(i=>i.id===set.imgId); if(item) return item.natH||0; }
+  if(imgList.length>0) return imgList[0].natH||0;
+  return 0;
 }
 function updateSetImgBtns(setId){
   const set=bannerSets.find(s=>s.id===setId);
@@ -2115,6 +2144,14 @@ function onGradX(id, d, val){
   applySetStyle(id);
 }
 
+function onHctrlValBlur(id, d, el){
+  let v=parseFloat(String(el.value).replace(/[^0-9.\-]/g,''));
+  if(isNaN(v)) v=100;
+  v=Math.max(1,Math.min(200,Math.round(v)));
+  el.value=v+'%';
+  onSetSl(id, d, 'scale', v);
+}
+
 function onSetSl(id,d,prop,val){
   const set=bannerSets.find(s=>s.id===id);
   if(!set) return;
@@ -2125,7 +2162,7 @@ function onSetSl(id,d,prop,val){
   const hctrlV=document.getElementById('hctrlV'+S+'_'+id);
   if(prop==='scale'){
     if(hctrlR) hctrlR.value=val;
-    if(hctrlV) hctrlV.textContent=Math.round(val)+'%';
+    if(hctrlV) hctrlV.value=Math.round(val)+'%';
   }
   applySetStyle(id);
 }
@@ -2149,7 +2186,7 @@ function handleImgReplace(e,id){
     tmpImg.onload=function(){
       const ratio=tmpImg.naturalWidth/tmpImg.naturalHeight||1;
       const item=imgList.find(i=>i.id===id);
-      if(item){item.src=src;item.name=f.name;item.natRatio=ratio;}
+      if(item){item.src=src;item.name=f.name;item.natRatio=ratio;item.natH=tmpImg.naturalHeight||1;}
       if(activeImgId===id){imgSrc=src;imgNatRatio=ratio;}
       // 이 이미지 사용 중인 모든 배너의 img 요소 srcId 초기화 (캐시 무효화)
       bannerSets.forEach(function(s){
