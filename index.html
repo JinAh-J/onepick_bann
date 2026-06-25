@@ -233,6 +233,7 @@ input[type=range]{flex:1;height:4px;accent-color:var(--blue);cursor:pointer}
 .hctrl-val-input{font-size:11px;color:#fff;width:36px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:4px;padding:2px 4px;text-align:center;font-family:inherit;}
 .hctrl-val-input:focus{outline:none;border-color:#fff;background:rgba(255,255,255,.25);}
 .bnr:hover .bnr-hover-ctrl{display:flex;}
+.logo-hover-ctrl{position:absolute;bottom:auto;left:8px;top:8px;transform:none;}
 
 /* TEXT EDIT HOVER */
 .b-title,.b-sub{position:relative}
@@ -692,8 +693,8 @@ function addBannerSet(type){
     id,type,bgColor:'#222222',gradStop1:'#222222',gradStop2:'transparent',gradAngle:90,
     imgId: imgList.length>0 ? imgList[0].id : null,
     dev:{
-      pc:{x:30,y:0,scale:100,gradX:0},
-      m:{x:25,y:0,scale:100,gradX:0}
+      pc:{x:30,y:0,scale:100,gradX:0,logoScale:0},
+      m:{x:25,y:0,scale:100,gradX:0,logoScale:0}
     }
   };
   bannerSets.push(set);
@@ -857,9 +858,14 @@ function renderAllSets(){
             +'<div id="bgPC_'+set.id+'" style="position:absolute;inset:0;z-index:0;background:'+bgCss+';"></div>'
             +'<div id="ilPC_'+set.id+'" style="position:absolute;inset:0;z-index:1;overflow:visible;pointer-events:none;"><img id="imgPC_'+set.id+'" style="position:absolute;display:none;" alt=""></div>'
             +'<div id="hctrlPC_'+set.id+'" class="bnr-hover-ctrl">'
-              +'<span style="font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;">크기</span>'
+              +'<span style="font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;">이미지 크기</span>'
               +'<input type="range" min="1" max="200" value="100" step="1" oninput="onSetSl('+set.id+',\'pc\',\'scale\',this.value)" id="hctrlRPC_'+set.id+'">'
               +'<input type="text" id="hctrlVPC_'+set.id+'" class="hctrl-val-input" value="100%" onfocus="this.select()" onkeydown="if(event.key===\'Enter\')this.blur()" onblur="onHctrlValBlur('+set.id+',\'pc\',this)">'
+            +'</div>'
+            +'<div id="logoCtrlPC_'+set.id+'" class="bnr-hover-ctrl logo-hover-ctrl">'
+              +'<span style="font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;">로고 크기</span>'
+              +'<input type="range" min="-5" max="0" value="0" step="5" oninput="onSetSl('+set.id+',\'pc\',\'logoScale\',this.value)" id="logoCtrlRPC_'+set.id+'">'
+              +'<span id="logoCtrlVPC_'+set.id+'" style="font-size:11px;color:#fff;min-width:30px;">0%</span>'
             +'</div>'
             +'<div id="dtPC_'+set.id+'" style="position:absolute;inset:0;z-index:2;display:none;pointer-events:none;"></div>'
             +'<div id="goPC_'+set.id+'" style="position:absolute;inset:0;z-index:3;display:none;pointer-events:none;"></div>'
@@ -875,9 +881,14 @@ function renderAllSets(){
             +'<div id="bgM_'+set.id+'" style="position:absolute;inset:0;z-index:0;background:'+bgCss+';"></div>'
             +'<div id="ilM_'+set.id+'" style="position:absolute;inset:0;z-index:1;overflow:visible;pointer-events:none;"><img id="imgM_'+set.id+'" style="position:absolute;display:none;" alt=""></div>'
             +'<div id="hctrlM_'+set.id+'" class="bnr-hover-ctrl">'
-              +'<span style="font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;">크기</span>'
+              +'<span style="font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;">이미지 크기</span>'
               +'<input type="range" min="1" max="200" value="100" step="1" oninput="onSetSl('+set.id+',\'m\',\'scale\',this.value)" id="hctrlRM_'+set.id+'">'
               +'<input type="text" id="hctrlVM_'+set.id+'" class="hctrl-val-input" value="100%" onfocus="this.select()" onkeydown="if(event.key===\'Enter\')this.blur()" onblur="onHctrlValBlur('+set.id+',\'m\',this)">'
+            +'</div>'
+            +'<div id="logoCtrlM_'+set.id+'" class="bnr-hover-ctrl logo-hover-ctrl">'
+              +'<span style="font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;">로고 크기</span>'
+              +'<input type="range" min="-5" max="0" value="0" step="5" oninput="onSetSl('+set.id+',\'m\',\'logoScale\',this.value)" id="logoCtrlRM_'+set.id+'">'
+              +'<span id="logoCtrlVM_'+set.id+'" style="font-size:11px;color:#fff;min-width:30px;">0%</span>'
             +'</div>'
             +'<div id="dtM_'+set.id+'" style="position:absolute;inset:0;z-index:2;display:none;pointer-events:none;"></div>'
             +'<div id="goM_'+set.id+'" style="position:absolute;inset:0;z-index:3;display:none;pointer-events:none;"></div>'
@@ -902,13 +913,17 @@ function renderAllSets(){
         if(!imgSrc) return;
         // hover ctrl 슬라이더 클릭은 드래그 시작 안 함
         if(e.target.tagName==='INPUT'||e.target.tagName==='BUTTON'||e.target.closest('.bnr-hover-ctrl')) return;
-        if(!set.dev) set.dev={pc:{x:30,y:0,scale:80},m:{x:25,y:0,scale:80}};
+        if(!set.dev) set.dev={pc:{x:30,y:0,scale:80,logoScale:0},m:{x:25,y:0,scale:80,logoScale:0}};
         drag=true;sx=e.clientX;sy=e.clientY;ox=set.dev[d].x;oy=set.dev[d].y;
         bnr.style.cursor='grabbing';e.preventDefault();
       });
       var hctrlWrap=document.getElementById('hctrl'+S+'_'+set.id);
       if(hctrlWrap){
         hctrlWrap.addEventListener('mousedown',function(e){ e.stopPropagation(); });
+      }
+      var logoCtrlWrap=document.getElementById('logoCtrl'+S+'_'+set.id);
+      if(logoCtrlWrap){
+        logoCtrlWrap.addEventListener('mousedown',function(e){ e.stopPropagation(); });
       }
       document.addEventListener('mousemove',function(e){
         if(!drag) return;
@@ -924,11 +939,23 @@ function renderAllSets(){
         drag=false;bnr.style.cursor=imgSrc?'grab':'default';
       });
       bnr.addEventListener('wheel',function(e){
+        if(!set.dev) set.dev={pc:{x:30,y:0,scale:80,logoScale:0},m:{x:25,y:0,scale:80,logoScale:0}};
+        var S2=d==='pc'?'PC':'M';
+        // 로고 영역 위에서 휠 조작 시 로고 크기 조절 (축소만, 0~-5)
+        if(logoSrc && e.target.closest('.logo-wrap')){
+          e.preventDefault();
+          var cur=set.dev[d].logoScale||0;
+          set.dev[d].logoScale=(e.deltaY<0)?0:-5; // 휠 위로(확대 방향)=0%(원래크기), 아래로(축소)=-5%
+          var logoCtrlR=document.getElementById('logoCtrlR'+S2+'_'+set.id);
+          var logoCtrlV=document.getElementById('logoCtrlV'+S2+'_'+set.id);
+          if(logoCtrlR) logoCtrlR.value=set.dev[d].logoScale;
+          if(logoCtrlV) logoCtrlV.textContent=set.dev[d].logoScale+'%';
+          applySetStyle(set.id);
+          return;
+        }
         if(!imgSrc) return;
         e.preventDefault();
-        if(!set.dev) set.dev={pc:{x:30,y:0,scale:80},m:{x:25,y:0,scale:80}};
         set.dev[d].scale=Math.max(1,Math.min(200,set.dev[d].scale+(e.deltaY<0?1:-1)));
-        var S2=d==='pc'?'PC':'M';
         var hctrlR=document.getElementById('hctrlR'+S2+'_'+set.id);
         var hctrlV=document.getElementById('hctrlV'+S2+'_'+set.id);
         if(hctrlR) hctrlR.value=set.dev[d].scale;
@@ -954,7 +981,7 @@ function buildBnrHTML(d, set){
     <div id="il${S}_${set.id}" style="position:absolute;inset:0;overflow:visible;z-index:1;pointer-events:none;">
       <img id="img${S}_${set.id}" src="" alt="" style="position:absolute;display:none;pointer-events:none;">
       <div id="hctrl${S}_${set.id}" class="bnr-hover-ctrl">
-        <span style="font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;">크기</span>
+        <span style="font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;">이미지 크기</span>
         <input type="range" min="10" max="400" value="80" step="1"
           oninput="onSetSl(${set.id},'${dStr}','scale',this.value)"
           id="hctrlR${S}_${set.id}">
@@ -1120,9 +1147,15 @@ function applySetStyle(id){
 
     // 로고 (고정 높이 컨테이너로 레이아웃 안정화)
     const logoH=isPC?30:20;
-    let logoHTML=`<div style="height:${logoH}px;display:flex;align-items:center;margin-bottom:${isPC?8:6}px;flex-shrink:0;">`;
+    const logoBaseMaxH=isPC?20:12; // 가이드 기준 로고 최대 높이(px)
+    const logoBaseMaxW=isPC?200:120;
+    // logoScale: 0 / -5 두 단계만 (확대 없음, 축소만 / 가이드 기준 px의 % 가감)
+    const logoScalePct=Math.max(-5,Math.min(0,(setDev&&setDev.logoScale!=null)?setDev.logoScale:0));
+    const logoMaxH=Math.max(1, Math.round(logoBaseMaxH*(1+logoScalePct/100)));
+    const logoMaxW=Math.max(1, Math.round(logoBaseMaxW*(1+logoScalePct/100)));
+    let logoHTML=`<div class="logo-wrap" id="logoWrap${S}_${set.id}" style="height:${logoH}px;display:flex;align-items:center;margin-bottom:${isPC?8:6}px;flex-shrink:0;position:relative;">`;
     if(logoSrc){
-      logoHTML+=`<img src="${logoSrc}" alt="" style="height:auto;max-height:${isPC?'20':'12'}px;max-width:${isPC?'200':'120'}px;object-fit:contain;display:block;">`;
+      logoHTML+=`<img id="logoImg${S}_${set.id}" src="${logoSrc}" alt="" style="height:auto;max-height:${logoMaxH}px;max-width:${logoMaxW}px;object-fit:contain;display:block;">`;
     } else {
       const lw=isPC?72:80;
       logoHTML+=`<div onclick="document.getElementById('logoFile').click()" style="display:inline-flex;align-items:center;justify-content:center;width:${lw}px;height:${logoH}px;border-radius:3px;border:1.5px dashed ${color};opacity:.5;cursor:pointer;font-family:'Pretendard',sans-serif;font-size:${isPC?11:9}px;font-weight:500;color:${color};position:relative;z-index:6;">logo</div>`;
@@ -1159,6 +1192,18 @@ function applySetStyle(id){
     ct.innerHTML=logoHTML
       +titleHTML
       +`<div style="${subStyle}">${subText||`<span style="opacity:.35">${phSub}</span>`}</div>`;
+
+    // 로고 크기 컨트롤 동기화 (logoSrc 있을 때만 표시)
+    const logoCtrlEl=document.getElementById('logoCtrl'+S+'_'+set.id);
+    const logoCtrlR=document.getElementById('logoCtrlR'+S+'_'+set.id);
+    const logoCtrlV=document.getElementById('logoCtrlV'+S+'_'+set.id);
+    if(logoCtrlEl) logoCtrlEl.style.display=logoSrc?'':'none';
+    if(logoCtrlR) logoCtrlR.value=logoScalePct;
+    if(logoCtrlV) logoCtrlV.textContent=(logoScalePct>0?'+':'')+logoScalePct+'%';
+
+    // 이미지 크기 컨트롤 동기화 (이미지 있을 때만 표시)
+    const hctrlEl=document.getElementById('hctrl'+S+'_'+set.id);
+    if(hctrlEl) hctrlEl.style.display=curImgSrc?'':'none';
   });
 }
 
@@ -2135,7 +2180,7 @@ function toggleGradPopup(setId, btnEl){
 function onGradX(id, d, val){
   const set=bannerSets.find(s=>s.id===id);
   if(!set) return;
-  if(!set.dev) set.dev={pc:{x:30,y:0,scale:100,gradX:0},m:{x:25,y:0,scale:100,gradX:0}};
+  if(!set.dev) set.dev={pc:{x:30,y:0,scale:100,gradX:0,logoScale:0},m:{x:25,y:0,scale:100,gradX:0,logoScale:0}};
   const v=parseFloat(val);
   if(!set.dev[d]) set.dev[d]={x:30,y:0,scale:100,gradX:0};
   set.dev[d].gradX=v;
@@ -2155,14 +2200,25 @@ function onHctrlValBlur(id, d, el){
 function onSetSl(id,d,prop,val){
   const set=bannerSets.find(s=>s.id===id);
   if(!set) return;
-  if(!set.dev) set.dev={pc:{x:30,y:0,scale:80},m:{x:25,y:0,scale:80}};
-  set.dev[d][prop]=parseFloat(val);
+  if(!set.dev) set.dev={pc:{x:30,y:0,scale:80,logoScale:0},m:{x:25,y:0,scale:80,logoScale:0}};
+  let v=parseFloat(val);
+  if(prop==='logoScale'){
+    // 0 / -5 두 단계로만 스냅 (확대 없음, 축소만)
+    v=(v<=-2.5)?-5:0;
+  }
+  set.dev[d][prop]=v;
   const S=d==='pc'?'PC':'M';
   const hctrlR=document.getElementById('hctrlR'+S+'_'+id);
   const hctrlV=document.getElementById('hctrlV'+S+'_'+id);
   if(prop==='scale'){
-    if(hctrlR) hctrlR.value=val;
-    if(hctrlV) hctrlV.value=Math.round(val)+'%';
+    if(hctrlR) hctrlR.value=v;
+    if(hctrlV) hctrlV.value=Math.round(v)+'%';
+  }
+  if(prop==='logoScale'){
+    const logoCtrlR=document.getElementById('logoCtrlR'+S+'_'+id);
+    const logoCtrlV=document.getElementById('logoCtrlV'+S+'_'+id);
+    if(logoCtrlR) logoCtrlR.value=v;
+    if(logoCtrlV) logoCtrlV.textContent=(v>0?'+':'')+Math.round(v)+'%';
   }
   applySetStyle(id);
 }
