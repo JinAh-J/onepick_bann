@@ -1004,18 +1004,13 @@ function applySetSizing(id){
     var stage=document.getElementById('stage'+S+'_'+id);
     var bnr=document.getElementById('bnr'+S+'_'+id);
     if(!stage||!bnr) return;
-    // main 영역 너비에서 여백 제외하여 계산
-    var mainEl=document.querySelector('.main-body');
-    var mainW=mainEl?(mainEl.offsetWidth||mainEl.clientWidth):0;
-    var availW=mainW>100?(mainW-48):(window.innerWidth-268-80);
-    if(availW<100) availW=600;
-    var sc=Math.min(1, availW/w);
+    // 배너는 항상 실제 크기로 고정 (축소 없음, 가로 스크롤로 처리)
     bnr.style.width=w+'px';
     bnr.style.height=h+'px';
-    bnr.style.transform='scale('+sc+')';
-    bnr.style.transformOrigin='top left';
-    stage.style.height=Math.ceil(h*sc)+'px';
-    stage.style.overflow='hidden';
+    bnr.style.transform='';
+    bnr.style.transformOrigin='';
+    stage.style.height=h+'px';
+    stage.style.overflow='visible';
   });
 }
 
@@ -2427,7 +2422,7 @@ async function captureSetBanner(d,id){
 
   try{
     const canvas=await html2canvas(clone,{
-      scale:1,useCORS:true,allowTaint:true,
+      scale:2,useCORS:true,allowTaint:true,
       backgroundColor:null,width:w,height:h,
       logging:false,imageTimeout:0
     });
@@ -2491,8 +2486,7 @@ function buildSharePage(captures,url,now){
 
   return '<!DOCTYPE html><html lang="ko"><head>'
     +'<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">'
-    +'<title>배너 미리보기 공유</title>'
-    +'<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">'
+    +'<title>배너 미리보기</title>'
     +'<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">'
     +'<style>'+css+'</style></head><body>'
     +'<div class="topbar">'
@@ -2500,13 +2494,9 @@ function buildSharePage(captures,url,now){
     +'<div class="tsep"></div>'
     +'<span class="ttitle">미리보기</span>'
     +'<div class="tsp"></div>'
-    +'<button class="copy-btn" id="copyBtn" onclick="copyUrl()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2H4a1 1 0 00-1 1v9"/><rect x="5" y="5" width="8" height="9" rx="1"/></svg> URL 복사</button>'
+    +'<span class="tmeta">'+now+'</span>'
     +'</div>'
     +'<div class="wrap">'
-    +'<div class="url-bar">'
-    +'<input type="text" class="url-input" id="urlInput" value="'+url+'" readonly onclick="this.select()">'
-    +'<button class="copy-btn" id="copyBtn2" onclick="copyUrl()">🔗 URL 복사</button>'
-    +'</div>'
     +bannerCards
     +'</div>'
     +'<div class="footer">'+now+'</div>'
