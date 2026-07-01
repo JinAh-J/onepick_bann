@@ -2442,11 +2442,16 @@ async function captureSetBanner(d,id){
   if(!bnr) return null;
   const{w,h}=SIZES[d];
 
-  // 실제 크기 복제본을 화면 밖에 배치해서 캡처 (라운드 없이, 고해상도)
+  // 원본 배너에서 폰트/이미지 준비 완료 확인 후 클론
+  await waitForBannerReady(bnr);
+
   const clone=bnr.cloneNode(true);
   clone.style.cssText=`position:fixed;left:-${w+100}px;top:0;width:${w}px;height:${h}px;zoom:1;transform:none;pointer-events:none;border-radius:0;`;
   document.body.appendChild(clone);
-  await waitForBannerReady(clone);
+
+  // 클론은 rAF 2회로 레이아웃 안정화만 기다림 (이미지는 원본에서 이미 확인)
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+
   try{
     const canvas=await html2canvas(clone,{
       scale:1,useCORS:true,allowTaint:true,
