@@ -51,7 +51,10 @@ export default async function handler(req, res) {
     if (!id) return res.status(400).json({ error: 'id가 필요합니다' });
     try {
       const resp = await fetch('https://api.github.com/gists/' + id, {
-        headers: { 'Accept': 'application/vnd.github.v3+json' }
+        headers: {
+          'Accept': 'application/vnd.github.v3+json',
+          ...(GIST_TOKEN ? { 'Authorization': 'token ' + GIST_TOKEN } : {})
+        }
       });
       if (!resp.ok) return res.status(404).json({ error: '미리보기를 찾을 수 없습니다' });
       const gist = await resp.json();
