@@ -2377,6 +2377,13 @@ async function openConfirm(){
   const origHTML=btn.innerHTML;
   btn.innerHTML='생성 중...';
 
+  // 팝업 차단 방지: 클릭 직후 즉시 새 창 열기
+  const newWin=window.open('','_blank');
+  if(newWin){
+    newWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>미리보기 생성 중</title><style>body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#f2f3f6;font-family:sans-serif;color:#555;gap:12px;} .spinner{width:32px;height:32px;border:3px solid #e5e7eb;border-top-color:#1d4ed8;border-radius:50%;animation:spin 0.8s linear infinite;} @keyframes spin{to{transform:rotate(360deg);}}</style></head><body><div class="spinner"></div><div style="font-size:15px;">미리보기 생성 중...</div></body></html>');
+    newWin.document.close();
+  }
+
   try{
     const captures=[];
     const typeLabel={none:'배경없음',diagonal:'사선',gradient:'그라데이션'};
@@ -2385,20 +2392,35 @@ async function openConfirm(){
       const mImg=await captureSetBanner('m',set.id);
       captures.push({type:set.type,typeLabel:typeLabel[set.type]||set.type,pcImg,mImg});
     }
-
-    // 로컬에서 미리보기 HTML 생성 (서버 불필요)
     const now=new Date().toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
-    const html=buildSharePage(captures,window.location.href,now);
-    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-    const blobUrl=URL.createObjectURL(blob);
-    const newWin=window.open(blobUrl,'_blank');
-    if(!newWin) showToast('팝업이 차단되었습니다. 팝업 허용 후 다시 시도해주세요.','e',4000);
-    // Blob URL은 새 창이 열린 후 일정 시간 후 해제
-    setTimeout(()=>URL.revokeObjectURL(blobUrl),60000);
+
+    const bodyStr=JSON.stringify({captures,meta:{createdAt:now}});
+    console.log('미리보기 전송 용량:', (bodyStr.length/1024/1024).toFixed(2), 'MB');
+
+    const resp=await fetch('/api/preview',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:bodyStr
+    });
+    const data=await resp.json();
+    if(!resp.ok){throw new Error(data.error||'저장 실패');}
+    const{id}=data;
+
+    const shareUrl=window.location.origin+'/?preview='+id;
+    // 미리 열어둔 창에 최종 미리보기 페이지 URL로 이동
+    if(newWin && !newWin.closed){
+      newWin.location.href=shareUrl;
+    } else {
+      window.open(shareUrl,'_blank');
+    }
 
   }catch(err){
     console.error(err);
-    showToast('오류: '+err.message,'e',5000);
+    if(newWin && !newWin.closed) newWin.close();
+    const msg=err.message==='Failed to fetch'
+      ? '서버에 연결할 수 없습니다. 배포된 환경에서 실행해주세요.'
+      : err.message;
+    showToast('오류: '+msg,'e',5000);
   }finally{
     btn.disabled=false;btn.innerHTML=origHTML;
   }
@@ -2495,6 +2517,7 @@ function buildSharePage(captures,url,now){
     +'<span class="ttitle">미리보기</span>'
     +'<div class="tsp"></div>'
     +'<span class="tmeta">'+now+'</span>'
+    +'<button class="copy-btn" onclick="copyUrl()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2H4a1 1 0 00-1 1v9"/><rect x="5" y="5" width="8" height="9" rx="1"/></svg> URL 복사</button>'
     +'</div>'
     +'<div class="wrap">'
     +bannerCards
