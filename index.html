@@ -2008,8 +2008,9 @@ function checkDownloadReady(){
   const mTitle=txt.m.title.trim();
   const mSub=txt.m.sub.trim();
   const hasSets=bannerSets.length>0;
+  const hasImg=imgList.length>0;
   const hasLogo=!!(logoSrc||companyName.trim());
-  const ready=!!(hasSets && txt.pc.title.trim() && txt.pc.sub.trim() && txt.m.title.trim() && txt.m.sub.trim() && imgSrc && hasLogo);
+  const ready=!!(hasSets && pcTitle && pcSub && mTitle && mSub && hasImg && hasLogo);
   const b1=document.getElementById('dlBtn1');
   const b2=document.getElementById('dlBtn2');
   if(b1) b1.disabled=!ready;
@@ -2021,7 +2022,7 @@ function checkDownloadReady(){
       const missing=[];
       if(!pcTitle||!mTitle) missing.push('메인 텍스트');
       if(!pcSub||!mSub) missing.push('서브 텍스트');
-      if(!imgSrc) missing.push('이미지');
+      if(!hasImg) missing.push('이미지');
       if(!hasLogo) missing.push('로고(이미지 또는 기업명)');
       note.innerHTML=missing.length?`<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="vertical-align:middle;margin-right:3px"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="9"/><circle cx="8" cy="11.5" r=".6" fill="currentColor" stroke="none"/></svg>필요: ${missing.join(', ')}`:'';
     }else{ note.textContent=''; }
