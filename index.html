@@ -2382,55 +2382,28 @@ async function openConfirm(){
   const origHTML=btn.innerHTML;
   btn.innerHTML='생성 중...';
 
-  // 팝업 차단 방지: 사용자 클릭 시점에 미리 창 열기
-  const newWin=window.open('','_blank');
-  if(newWin) newWin.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f2f3f6;color:#555;font-size:15px;">미리보기 생성 중...</body></html>');
-
   try{
     const captures=[];
     const typeLabel={none:'배경없음',diagonal:'사선',gradient:'그라데이션'};
     for(const set of bannerSets){
       const pcImg=await captureSetBanner('pc',set.id);
       const mImg=await captureSetBanner('m',set.id);
-      // API 전송용 JPEG 압축 (0.92 고품질)
-      const toJpeg=async(dataUrl)=>{
-        if(!dataUrl) return null;
-        const img=new Image();
-        await new Promise(r=>{img.onload=r;img.src=dataUrl;});
-        const cvs=document.createElement('canvas');
-        cvs.width=img.width;cvs.height=img.height;
-        cvs.getContext('2d').drawImage(img,0,0);
-        return cvs.toDataURL('image/jpeg',0.85);
-      };
-      captures.push({type:set.type,typeLabel:typeLabel[set.type]||set.type,pcImg:await toJpeg(pcImg),mImg:await toJpeg(mImg)});
+      captures.push({type:set.type,typeLabel:typeLabel[set.type]||set.type,pcImg,mImg});
     }
+
+    // 로컬에서 미리보기 HTML 생성 (서버 불필요)
     const now=new Date().toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
-
-    const bodyStr=JSON.stringify({captures,meta:{createdAt:now}});
-    console.log('미리보기 전송 용량:', (bodyStr.length/1024/1024).toFixed(2), 'MB');
-
-    const resp=await fetch('/api/preview',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:bodyStr
-    });
-    const data=await resp.json();
-    if(!resp.ok){throw new Error(data.error||'저장 실패');}
-    const {id}=data;
-
-    // 미리 열어둔 창에 URL 설정
-    const shareUrl=window.location.origin+'/?preview='+id;
-    if(newWin) newWin.location.href=shareUrl;
-    else window.open(shareUrl,'_blank');
+    const html=buildSharePage(captures,window.location.href,now);
+    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    const blobUrl=URL.createObjectURL(blob);
+    const newWin=window.open(blobUrl,'_blank');
+    if(!newWin) showToast('팝업이 차단되었습니다. 팝업 허용 후 다시 시도해주세요.','e',4000);
+    // Blob URL은 새 창이 열린 후 일정 시간 후 해제
+    setTimeout(()=>URL.revokeObjectURL(blobUrl),60000);
 
   }catch(err){
     console.error(err);
-    if(newWin) newWin.close();
-    // failed to fetch는 보통 요청 용량 초과 또는 서버 미배포가 원인
-    const msg=err.message==='Failed to fetch'
-      ? '서버에 연결할 수 없습니다 (이미지 용량이 너무 크거나 서버 설정 문제일 수 있습니다)'
-      : err.message;
-    showToast('오류: '+msg,'e',5000);
+    showToast('오류: '+err.message,'e',5000);
   }finally{
     btn.disabled=false;btn.innerHTML=origHTML;
   }
