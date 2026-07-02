@@ -58,8 +58,16 @@ export default async function handler(req, res) {
       });
       if (!resp.ok) return res.status(404).json({ error: '미리보기를 찾을 수 없습니다' });
       const gist = await resp.json();
-      const raw = gist.files['preview.json']?.content;
-      if (!raw) return res.status(404).json({ error: '데이터가 없습니다' });
+      const file = gist.files['preview.json'];
+      if (!file) return res.status(404).json({ error: '데이터가 없습니다' });
+
+      let raw = file.content;
+      // 1MB 초과 파일은 GitHub이 내용을 잘라서 반환 → raw_url로 전체 다시 가져오기
+      if (file.truncated && file.raw_url) {
+        const rawResp = await fetch(file.raw_url);
+        if (!rawResp.ok) return res.status(500).json({ error: '전체 데이터 로드 실패' });
+        raw = await rawResp.text();
+      }
       return res.status(200).json(JSON.parse(raw));
     } catch (err) {
       return res.status(500).json({ error: err.message });
