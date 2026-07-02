@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       const now = meta?.createdAt || new Date().toLocaleString('ko-KR');
       const payload = {
         description: 'Banner Preview ' + now,
-        public: true,
+        public: false,
         files: { 'preview.json': { content: JSON.stringify({ captures, meta }) } }
       };
       const resp = await fetch('https://api.github.com/gists', {
