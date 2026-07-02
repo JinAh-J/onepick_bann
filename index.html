@@ -671,6 +671,7 @@ const SIZES={pc:{w:1240,h:200},m:{w:360,h:160}};
 let bannerSets=[]; // [{id, type, bgColor, gradStop1, gradStop2, gradAngle}]
 let nextSetId=1;
 // 공통 상태
+let bannerType='none';
 let bgColor='#222222',gradStop1='#222222',gradStop2='transparent',gradAngle=90;
 let logoSrc=null,imgSrc=null,imgNatRatio=1,companyName='';
 const txt={pc:{title:'',sub:''},m:{title:'',sub:''}};
@@ -1278,17 +1279,19 @@ function tc(hex){
 }
 function getBg(){return bannerType==='gradient'?`linear-gradient(${gradAngle}deg,#${gradStop1.replace('#','')},#${gradStop2.replace('#','')})`:bgColor;}
 function getTC(){return bannerType==='gradient'?'#fff':tc(bgColor);}
-function getScF(d){return Math.min(1,(document.getElementById('stage'+sfx(d)).clientWidth-28)/SIZES[d].w);}
+function getScF(d){const st=document.getElementById('stage'+sfx(d));if(!st)return 1;return Math.min(1,(st.clientWidth-28)/SIZES[d].w);}
 
 /* SIZING */
 function applySizing(){
   ['pc','m'].forEach(d=>{
     const{w,h}=SIZES[d];const S=sfx(d);const sc=getScF(d);
     const bnr=document.getElementById('bnr'+S);
+    if(!bnr) return; // 레거시 단일배너 요소 없으면 스킵
     bnr.style.width=w+'px';bnr.style.height=h+'px';
     const scaler=document.getElementById('scaler'+S);
-    scaler.style.transform=`scale(${sc})`;scaler.style.width=w+'px';scaler.style.height=h+'px';
-    document.getElementById('stage'+S).style.minHeight=(h*sc+8)+'px';
+    if(scaler){scaler.style.transform=`scale(${sc})`;scaler.style.width=w+'px';scaler.style.height=h+'px';}
+    const stage=document.getElementById('stage'+S);
+    if(stage) stage.style.minHeight=(h*sc+8)+'px';
   });
 }
 window.addEventListener('resize',()=>{applySizing();['pc','m'].forEach(d=>{applyImgT(d);updateResizeRing(d);});});
@@ -1296,6 +1299,7 @@ window.addEventListener('resize',()=>{applySizing();['pc','m'].forEach(d=>{apply
 /* IMAGE TRANSFORM */
 function applyImgT(d){
   const S=sfx(d);const img=document.getElementById('img'+S);
+  if(!img) return; // 레거시 단일배너 요소 없으면 스킵
   if(!imgSrc){img.style.display='none';return;}
   const{w,h}=SIZES[d];
   const bh=h*(dev[d].scale/100);const bw=bh*imgNatRatio;
@@ -1309,6 +1313,7 @@ function applyImgT(d){
 /* RESIZE RING */
 function updateResizeRing(d){
   const S=sfx(d);const ring=document.getElementById('rr'+S);
+  if(!ring) return; // 레거시 단일배너 요소 없으면 스킵
   if(!imgSrc){ring.classList.remove('show');return;}
   const bnr=document.getElementById('bnr'+S);const img=document.getElementById('img'+S);const sc=getScF(d);
   const bnrRect=bnr.getBoundingClientRect();const imgRect=img.getBoundingClientRect();
@@ -1539,7 +1544,7 @@ function onRgb(){
   const r=parseInt(document.getElementById('rgbR').value)||0,g=parseInt(document.getElementById('rgbG').value)||0,b=parseInt(document.getElementById('rgbB').value)||0;
   bgColor='#'+r2h(r,g,b);document.getElementById('hexIn').value=bgColor.replace('#','').toUpperCase();document.getElementById('cpick').value=bgColor;document.querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));applyBg();applyTextStyle('pc');applyTextStyle('m');
 }
-function updateGradBar(){if(bannerType!=='gradient')return;document.getElementById('gradBar').style.background=`linear-gradient(90deg,#${gradStop1.replace('#','')},#${gradStop2.replace('#','')})`;;}
+function updateGradBar(){if(bannerType!=='gradient')return;const gb=document.getElementById('gradBar');if(gb)gb.style.background=`linear-gradient(90deg,#${gradStop1.replace('#','')},#${gradStop2.replace('#','')})`;}
 function onGH(n){const el=document.getElementById('g'+n+'h');const v=el.value.replace(/[^0-9a-fA-F]/g,'');el.value=v;if(v.length===6){if(n===1){gradStop1='#'+v;document.getElementById('g1d').style.background='#'+v;document.getElementById('g1p').value='#'+v;}else{gradStop2='#'+v;document.getElementById('g2d').style.background='#'+v;document.getElementById('g2p').value='#'+v;}applyBg();}}
 function onGP(n){const hex=document.getElementById('g'+n+'p').value;if(n===1){gradStop1=hex;document.getElementById('g1d').style.background=hex;document.getElementById('g1h').value=hex.replace('#','').toUpperCase();}else{gradStop2=hex;document.getElementById('g2d').style.background=hex;document.getElementById('g2h').value=hex.replace('#','').toUpperCase();}applyBg();}
 function onGAng(){gradAngle=parseInt(document.getElementById('gAng').value);document.getElementById('gAngV').textContent=gradAngle+'°';applyBg();}
@@ -1550,8 +1555,10 @@ function setType(t,el){bannerType=t;document.querySelectorAll('.tab').forEach(x=
 /* BG */
 function applyBg(){
   const css=getBg();
-  document.getElementById('bgPC').style.background=css;document.getElementById('bgM').style.background=css;
-  ['PC','M'].forEach(S=>{const gov=document.getElementById('go'+S);if(bannerType==='gradient'){gov.style.cssText=`position:absolute;inset:0;pointer-events:none;z-index:3;background:${css};opacity:.55;mix-blend-mode:multiply;display:block;`;}else{gov.style.display='none';}});
+  const bgPCEl=document.getElementById('bgPC'),bgMEl=document.getElementById('bgM');
+  if(bgPCEl) bgPCEl.style.background=css;
+  if(bgMEl) bgMEl.style.background=css;
+  ['PC','M'].forEach(S=>{const gov=document.getElementById('go'+S);if(!gov)return;if(bannerType==='gradient'){gov.style.cssText=`position:absolute;inset:0;pointer-events:none;z-index:3;background:${css};opacity:.55;mix-blend-mode:multiply;display:block;`;}else{gov.style.display='none';}});
   updateGradBar();
 }
 
