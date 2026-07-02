@@ -2399,8 +2399,10 @@ async function openConfirm(){
     const data=await resp.json();
     if(!resp.ok){throw new Error(data.error||'저장 실패');}
     const{id}=data;
+    console.log('미리보기 Gist ID:', id);
 
     const shareUrl=window.location.origin+'/?preview='+id;
+    console.log('미리보기 URL:', shareUrl);
 
     // URL을 클립보드에 복사하고 토스트로 안내
     try{
@@ -2562,7 +2564,11 @@ initMTitle();
   try{
     // /api/preview 서버에서 데이터 가져오기
     const gistResp=await fetch('/api/preview?id='+previewId);
-    if(!gistResp.ok) throw new Error('미리보기를 찾을 수 없습니다');
+    if(!gistResp.ok){
+      let errMsg='미리보기를 찾을 수 없습니다';
+      try{ const e=await gistResp.json(); errMsg=e.error||errMsg; }catch(e){}
+      throw new Error(errMsg+' (status: '+gistResp.status+', id: '+previewId+')');
+    }
     const data=await gistResp.json();
     const html=buildSharePage(data.captures, window.location.href, data.meta?.createdAt||'');
     document.open();document.write(html);document.close();
