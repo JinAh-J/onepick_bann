@@ -2005,12 +2005,14 @@ function setImgForSet(setId, imgId){
 function checkDownloadReady(){
   const pcTitle=txt.pc.title.trim();
   const pcSub=txt.pc.sub.trim();
-  const mTitle=txt.m.title.trim();
+  const mLine1=(document.getElementById('mTitle1In')?.value||'').trim();
+  const mLine2=(document.getElementById('mTitle2In')?.value||'').trim();
+  const mTitleOk=!!(mLine1&&mLine2); // 모바일 메인 텍스트 줄1, 줄2 모두 필수
   const mSub=txt.m.sub.trim();
   const hasSets=bannerSets.length>0;
   const hasImg=imgList.length>0;
   const hasLogo=!!(logoSrc||companyName.trim());
-  const ready=!!(hasSets && pcTitle && pcSub && mTitle && mSub && hasImg && hasLogo);
+  const ready=!!(hasSets && pcTitle && pcSub && mTitleOk && mSub && hasImg && hasLogo);
   const b1=document.getElementById('dlBtn1');
   const b2=document.getElementById('dlBtn2');
   if(b1) b1.disabled=!ready;
@@ -2020,7 +2022,7 @@ function checkDownloadReady(){
     if(!hasSets){ note.textContent='배너 타입을 먼저 추가하세요'; return; }
     if(!ready){
       const missing=[];
-      if(!pcTitle||!mTitle) missing.push('메인 텍스트');
+      if(!pcTitle||!mTitleOk) missing.push('메인 텍스트'+(!mTitleOk&&pcTitle?' (모바일 줄1·줄2 모두 입력)':''));
       if(!pcSub||!mSub) missing.push('서브 텍스트');
       if(!hasImg) missing.push('이미지');
       if(!hasLogo) missing.push('로고(이미지 또는 기업명)');
@@ -2299,6 +2301,7 @@ function handleImgDropNew(e){
 function onCompanyNameInput(val){
   companyName=val;
   updateAllSets();
+  checkDownloadReady();
 }
 
 function onSidebarText(d,field,val){
